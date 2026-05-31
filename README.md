@@ -47,6 +47,40 @@
 
 本项目不需要安装 Python 第三方包，也不需要虚拟环境。若已安装参考项目可用的 Office / LibreOffice 环境，本工具可以直接搭配使用。
 
+### 安装 LibreOffice
+
+macOS / Linux 默认使用 LibreOffice 渲染。如果尚未安装，导出时会报「找不到 LibreOffice/soffice」，请先安装：
+
+**macOS**
+
+```bash
+# 方式一：Homebrew
+brew install --cask libreoffice
+
+# 方式二：从官网下载安装包
+# https://www.libreoffice.org/download/
+```
+
+首次启动 LibreOffice 可能较慢（构建字体缓存等），属正常现象；导出过程会显示进度与耗时，不会卡在空白屏。
+
+**Linux**
+
+```bash
+# Debian / Ubuntu
+sudo apt install libreoffice poppler-utils
+
+# Fedora
+sudo dnf install libreoffice poppler-utils
+```
+
+其中 `poppler-utils` 提供 `pdftoppm`，用于把 PDF 每页渲染成 PNG。
+
+**Windows**
+
+装有 Microsoft PowerPoint 时直接用 `pptx_to_images.cmd` 即可，无需 LibreOffice；也可安装 LibreOffice 配合 Python 入口使用。
+
+**没有 LibreOffice 时的兜底**：macOS 上如果装了 Keynote，工具会自动改用 Keynote 导出。注意 Keynote 按幻灯片原生分辨率导出（`--width` 不生效），且首次运行需在「系统设置 > 隐私与安全性 > 自动化」里授权。
+
 ### macOS 使用方式
 
 `pptx_to_images.command` 是 macOS 双击入口，会调用同目录下的 `pptx_to_images.py`。
@@ -199,6 +233,40 @@ MIT
 
 Rendering requires an installed presentation engine: PowerPoint on Windows, LibreOffice on macOS/Linux, or Keynote as a macOS fallback.
 
+### Installing LibreOffice
+
+On macOS / Linux the default renderer is LibreOffice. If it is not installed, export fails with “找不到 LibreOffice/soffice” (LibreOffice/soffice not found). Install it first:
+
+**macOS**
+
+```bash
+# Option 1: Homebrew
+brew install --cask libreoffice
+
+# Option 2: download the installer
+# https://www.libreoffice.org/download/
+```
+
+LibreOffice's first launch can be slow (building font caches, etc.) — this is normal. The export shows progress and elapsed time instead of a blank screen.
+
+**Linux**
+
+```bash
+# Debian / Ubuntu
+sudo apt install libreoffice poppler-utils
+
+# Fedora
+sudo dnf install libreoffice poppler-utils
+```
+
+`poppler-utils` provides `pdftoppm`, which renders each PDF page to PNG.
+
+**Windows**
+
+With Microsoft PowerPoint installed, just use `pptx_to_images.cmd` — LibreOffice is not required. You can also install LibreOffice and use the Python entry point.
+
+**Fallback without LibreOffice**: on macOS, if Keynote is installed the tool automatically exports with Keynote (Keynote exports at the slide's native resolution, so `--width` has no effect, and the first run needs Automation permission under System Settings → Privacy & Security → Automation).
+
 ### Usage
 
 ```bash
@@ -275,6 +343,40 @@ MIT
 | `pptx_to_images.cmd` | Windows + PowerShell ; utilise Microsoft PowerPoint si disponible |
 
 Le rendu nécessite un moteur de présentation installé : PowerPoint sous Windows, LibreOffice sous macOS/Linux, ou Keynote comme solution de secours sur macOS.
+
+### Installer LibreOffice
+
+Sous macOS / Linux, le moteur de rendu par défaut est LibreOffice. S'il n'est pas installé, l'export échoue avec « 找不到 LibreOffice/soffice ». Installez-le d'abord :
+
+**macOS**
+
+```bash
+# Option 1 : Homebrew
+brew install --cask libreoffice
+
+# Option 2 : télécharger l'installateur
+# https://www.libreoffice.org/download/
+```
+
+Le premier lancement de LibreOffice peut être lent (construction des caches de polices, etc.), c'est normal. L'export affiche la progression et le temps écoulé.
+
+**Linux**
+
+```bash
+# Debian / Ubuntu
+sudo apt install libreoffice poppler-utils
+
+# Fedora
+sudo dnf install libreoffice poppler-utils
+```
+
+`poppler-utils` fournit `pdftoppm`, qui rend chaque page PDF en PNG.
+
+**Windows**
+
+Avec Microsoft PowerPoint installé, utilisez simplement `pptx_to_images.cmd` — LibreOffice n'est pas nécessaire. Vous pouvez aussi installer LibreOffice et utiliser le point d'entrée Python.
+
+**Solution de secours sans LibreOffice** : sous macOS, si Keynote est installé, l'outil exporte automatiquement avec Keynote (Keynote exporte à la résolution native de la diapositive, donc `--width` est sans effet, et la première exécution nécessite l'autorisation d'automatisation dans Réglages Système → Confidentialité et sécurité → Automatisation).
 
 ### Utilisation
 

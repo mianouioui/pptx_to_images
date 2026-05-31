@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `run_command` wraps every external command with the new progress indicator. In a non-interactive context (pipe/redirect) the indicator degrades to static start/finish lines, so logs stay clean.
 - Timeout errors now state the limit in seconds.
+- The “LibreOffice not found” error now includes install instructions (Homebrew / download link), and the README gained an “Installing LibreOffice” section (Chinese / English / French).
 
 ## [1.0.1] - 2026-05-31
 

@@ -523,7 +523,11 @@ def export_with_libreoffice(presentation: Path, output_dir: Path, width: int, pr
     if not soffice:
         raise ConversionError(
             "找不到 LibreOffice/soffice。\n"
-            "请安装 LibreOffice，或在 Windows 上使用已安装 PowerPoint 的启动器。"
+            "请先安装 LibreOffice：\n"
+            "  · Homebrew：brew install --cask libreoffice\n"
+            "  · 或从官网下载：https://www.libreoffice.org/download/\n"
+            "安装后重新运行即可。"
+            "（Windows 装有 PowerPoint 时可改用 .cmd 启动器；macOS 装有 Keynote 时会自动兜底。）"
         )
 
     with tempfile.TemporaryDirectory(prefix="pptx-to-images.") as tmp:
