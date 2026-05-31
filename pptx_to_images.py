@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import itertools
 import os
 import re
 import shlex
@@ -9,10 +11,12 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 SUPPORTED_SUFFIXES = {".pptx", ".ppt"}
 TRAILING_NUMBER_RE = re.compile(r"(\d+)(?=\.png$)", re.IGNORECASE)
@@ -164,23 +168,76 @@ def find_pdftoppm() -> str | None:
     return find_executable(["pdftoppm"])
 
 
-def run_command(command: list[str], description: str, timeout: int = 180) -> subprocess.CompletedProcess[str]:
+SPINNER_FRAMES = (
+    ("|", "/", "-", "\\")
+    if os.name == "nt"
+    else ("⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏")
+)
+
+
+@contextlib.contextmanager
+def _progress(label: str):
+    """在外部命令执行期间显示「正在工作」的进度，避免长任务看起来像卡死。"""
+    stream = sys.stdout
+    start = time.monotonic()
+
+    if not stream.isatty():
+        # 非交互终端（重定向 / 管道）：不画动画，只打印开始与结束，避免污染输出
+        print(f"  · {label} …", flush=True)
+        ok = False
+        try:
+            yield
+            ok = True
+        finally:
+            elapsed = time.monotonic() - start
+            print(f"  · {label} {'完成' if ok else '失败'}（{elapsed:.1f}s）", flush=True)
+        return
+
+    stop = threading.Event()
+
+    def spin() -> None:
+        for frame in itertools.cycle(SPINNER_FRAMES):
+            if stop.is_set():
+                break
+            elapsed = time.monotonic() - start
+            stream.write(f"\r  {frame} {label} …（{elapsed:.0f}s）   ")
+            stream.flush()
+            time.sleep(0.1)
+
+    worker = threading.Thread(target=spin, daemon=True)
+    worker.start()
+    ok = False
     try:
-        result = subprocess.run(
-            command,
-            check=False,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=timeout,
-        )
-    except FileNotFoundError as exc:
-        raise ConversionError(f"找不到命令：{command[0]}") from exc
-    except subprocess.TimeoutExpired as exc:
-        raise ConversionError(f"{description} 超时。") from exc
-    if result.returncode != 0:
-        details = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
-        raise ConversionError(f"{description} 失败。\n{details}".rstrip())
+        yield
+        ok = True
+    finally:
+        stop.set()
+        worker.join(timeout=1.0)
+        elapsed = time.monotonic() - start
+        mark = "✓" if ok else "✗"
+        # 用空格覆盖残留的动画字符，再换行
+        stream.write(f"\r  {mark} {label}（{elapsed:.1f}s）".ljust(64) + "\n")
+        stream.flush()
+
+
+def run_command(command: list[str], description: str, timeout: int = 180) -> subprocess.CompletedProcess[str]:
+    with _progress(description):
+        try:
+            result = subprocess.run(
+                command,
+                check=False,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=timeout,
+            )
+        except FileNotFoundError as exc:
+            raise ConversionError(f"找不到命令：{command[0]}") from exc
+        except subprocess.TimeoutExpired as exc:
+            raise ConversionError(f"{description} 超时（超过 {timeout} 秒未完成）。") from exc
+        if result.returncode != 0:
+            details = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
+            raise ConversionError(f"{description} 失败。\n{details}".rstrip())
     return result
 
 
@@ -653,10 +710,11 @@ def main() -> int:
     opened: list[Path] = []
     failures: list[Path] = []
     multiple = len(presentations) > 1
-    for presentation in presentations:
+    total = len(presentations)
+    for index, presentation in enumerate(presentations, start=1):
         try:
             output_dir = output_dir_for(presentation, args.output, multiple, args.force)
-            print(f"\n正在导出：{presentation.name}")
+            print(f"\n[{index}/{total}] 正在导出：{presentation.name}")
             print(f"输出文件夹：{output_dir}")
             count, used_engine = export_presentation(
                 presentation,

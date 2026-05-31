@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-05-31
+
+### Added
+
+- Export progress feedback: each external step (LibreOffice→PDF, PDF→PNG, macOS PDFKit, PowerPoint, Keynote) now shows a live spinner with elapsed seconds in a terminal, finishing with `✓`/`✗` and the step's duration. So even a slow step (notably LibreOffice's first cold start) no longer looks like a hang.
+- Batch runs now prefix each file with an `[index/total]` counter.
+
+### Changed
+
+- `run_command` wraps every external command with the new progress indicator. In a non-interactive context (pipe/redirect) the indicator degrades to static start/finish lines, so logs stay clean.
+- Timeout errors now state the limit in seconds.
+
 ## [1.0.1] - 2026-05-31
 
 ### Fixed
@@ -44,5 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The tool requires a real presentation renderer because slide-to-image export cannot be done by simply reading PPTX XML. Supported renderers are Microsoft PowerPoint, LibreOffice, and Keynote on macOS.
 - The Python source has been tested on macOS with LibreOffice + `pdftoppm`, and with the macOS PDFKit fallback. The Windows PowerPoint launcher should be verified on a real Windows machine before release-critical use.
 
+[1.1.0]: https://github.com/mianouioui/pptx_to_images/releases/tag/V1.1.0
 [1.0.1]: https://github.com/mianouioui/pptx_to_images/releases/tag/V1.0.1
 [1.0.0]: https://github.com/mianouioui/pptx_to_images/releases/tag/V1.0.0

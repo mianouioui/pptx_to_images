@@ -1,6 +1,6 @@
 @echo off
 rem ============================================================
-rem  PPTX 转图片器 V1.0.1 - Windows 启动器
+rem  PPTX 转图片器 V1.1.0 - Windows 启动器
 rem  直接双击或拖拽 .pptx 到本文件即可运行
 rem ============================================================
 setlocal
@@ -22,7 +22,7 @@ try {
 }
 catch {}
 
-$Version = "1.0.1"
+$Version = "1.1.0"
 $Width = 1920
 
 function Fail {

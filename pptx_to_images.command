@@ -1,12 +1,12 @@
 #!/bin/bash
 # ============================================================
-#  PPTX 转图片器 V1.0.1 - macOS 启动器
+#  PPTX 转图片器 V1.1.0 - macOS 启动器
 #  双击即可运行，兼容 Intel 和 Apple Silicon Mac
 # ============================================================
 chmod +x "$0" >/dev/null 2>&1 || true
 xattr -d com.apple.quarantine "$0" >/dev/null 2>&1 || true
 
-VERSION="V1.0.1"
+VERSION="V1.1.0"
 LAUNCHER_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$LAUNCHER_DIR" || exit 1
 PYTHON_SCRIPT="$LAUNCHER_DIR/pptx_to_images.py"
