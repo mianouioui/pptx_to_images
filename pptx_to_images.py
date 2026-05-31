@@ -618,11 +618,14 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="输出文件夹。单个 PPTX 时直接输出到这里；多个 PPTX 时在其中创建子文件夹。",
     )
+    env_engine = os.environ.get("PPTX2IMG_ENGINE", "").strip().lower()
+    default_engine = env_engine if env_engine in ("auto", "powerpoint", "libreoffice", "keynote") else "auto"
     parser.add_argument(
         "--engine",
         choices=("auto", "powerpoint", "libreoffice", "keynote"),
-        default="auto",
-        help="导出引擎。默认 auto：Windows 优先 PowerPoint；macOS 优先 LibreOffice，失败后尝试 Keynote。",
+        default=default_engine,
+        help="导出引擎。默认 auto：Windows 优先 PowerPoint；macOS 优先 LibreOffice，失败后尝试 Keynote。"
+        "也可用环境变量 PPTX2IMG_ENGINE 设置默认（例如 PPTX2IMG_ENGINE=keynote）。",
     )
     parser.add_argument(
         "--width",

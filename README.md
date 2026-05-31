@@ -81,6 +81,8 @@ sudo dnf install libreoffice poppler-utils
 
 **没有 LibreOffice 时的兜底**：macOS 上如果装了 Keynote，工具会自动改用 Keynote 导出。注意 Keynote 按幻灯片原生分辨率导出（`--width` 不生效），且首次运行需在「系统设置 > 隐私与安全性 > 自动化」里授权。
 
+如果你不打算安装 LibreOffice，也可以**手动指定 Keynote**：命令行用 `--engine keynote`；或设置环境变量 `PPTX2IMG_ENGINE=keynote`，让命令行与双击启动器都默认用 Keynote、完全不依赖 LibreOffice（命令行 `--engine` 仍可临时覆盖）。`pptx_to_images.command` 里已预留一行被注释的 `export PPTX2IMG_ENGINE=keynote`，取消注释即可对双击生效。
+
 ### macOS 使用方式
 
 `pptx_to_images.command` 是 macOS 双击入口，会调用同目录下的 `pptx_to_images.py`。
@@ -267,6 +269,8 @@ With Microsoft PowerPoint installed, just use `pptx_to_images.cmd` — LibreOffi
 
 **Fallback without LibreOffice**: on macOS, if Keynote is installed the tool automatically exports with Keynote (Keynote exports at the slide's native resolution, so `--width` has no effect, and the first run needs Automation permission under System Settings → Privacy & Security → Automation).
 
+If you would rather not install LibreOffice, you can **pick Keynote explicitly**: pass `--engine keynote` on the command line, or set `PPTX2IMG_ENGINE=keynote` so both the command line and the double-click launcher default to Keynote without relying on LibreOffice (an explicit `--engine` still overrides it). `pptx_to_images.command` ships with a commented `export PPTX2IMG_ENGINE=keynote` line — uncomment it to apply it to double-click runs.
+
 ### Usage
 
 ```bash
@@ -377,6 +381,8 @@ sudo dnf install libreoffice poppler-utils
 Avec Microsoft PowerPoint installé, utilisez simplement `pptx_to_images.cmd` — LibreOffice n'est pas nécessaire. Vous pouvez aussi installer LibreOffice et utiliser le point d'entrée Python.
 
 **Solution de secours sans LibreOffice** : sous macOS, si Keynote est installé, l'outil exporte automatiquement avec Keynote (Keynote exporte à la résolution native de la diapositive, donc `--width` est sans effet, et la première exécution nécessite l'autorisation d'automatisation dans Réglages Système → Confidentialité et sécurité → Automatisation).
+
+Si vous préférez ne pas installer LibreOffice, vous pouvez **choisir Keynote explicitement** : utilisez `--engine keynote` en ligne de commande, ou définissez `PPTX2IMG_ENGINE=keynote` pour que la ligne de commande et le lanceur (double-clic) utilisent Keynote par défaut, sans dépendre de LibreOffice (un `--engine` explicite reste prioritaire). `pptx_to_images.command` contient une ligne `export PPTX2IMG_ENGINE=keynote` en commentaire — décommentez-la pour l'appliquer au double-clic.
 
 ### Utilisation
 

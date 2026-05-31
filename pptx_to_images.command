@@ -40,6 +40,10 @@ if [[ -z "$PYTHON_BIN" ]]; then
   fi
 fi
 
+# 想固定使用某个导出引擎时，取消下面一行的注释。
+# 例如不打算安装 LibreOffice、改用 Keynote（需已安装 Keynote）：
+# export PPTX2IMG_ENGINE=keynote
+
 if [[ $# -gt 0 ]]; then
   "$PYTHON_BIN" "$PYTHON_SCRIPT" "$@"
 else
